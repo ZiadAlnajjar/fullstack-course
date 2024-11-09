@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant client as Browser
+    participant server as Server
+
+    link server: api @ https://studies.cs.helsinki.fi/exampleapp/
+
+    Note right of client: Client registers form submit event handler:<br>- overwrites default submit behaviour<br>- adds a new note object to notes list<br>- renders the new list<br>- sends the new note object to server
+
+    client->>server: POST /new_note_spa
+    activate server
+    server-->>client: JSON Object {message: String}
+    deactivate server
+
+    Note right of client: event triggers that displays server response in browser console

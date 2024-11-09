@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant client as Browser
+    participant server as Server
+
+    link server: api @ https://studies.cs.helsinki.fi/exampleapp/
+
+    client->>server: GET /spa
+    activate server
+    server-->>client: spa
+    deactivate server
+
+    client->>server: GET /main.css
+    activate server
+    server-->>client: main.css
+    deactivate server
+
+    client->>server: GET /spa.js
+    activate server
+    server-->>client: spa.js
+    deactivate server
+
+    Note right of client: client executes js code<br>that requests data.json (notes)
+
+    client->>server: GET /data.json
+    activate server
+    server-->>client: data.json [{content: String, date: String}]
+    deactivate server
+
+    Note right of client: event triggers that renders the note list
