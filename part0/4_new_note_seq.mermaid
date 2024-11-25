@@ -4,32 +4,30 @@ sequenceDiagram
 
     link server: api @ https://studies.cs.helsinki.fi/exampleapp/
 
-    client->>server: POST /new_note
+    client ->> server: POST /new_note
     activate server
     Note left of server: server reads request body then<br>adds a new note object to notes
-    server-->>client: redirect to /notes
+    server -->> client: redirect to /notes
     deactivate server
 
-    client->>server: GET /notes
+    client ->> server: GET /notes
     activate server
-    server-->>client: notes
+    server -->> client: notes
     deactivate server
 
-    client->>server: GET /main.css
+    client ->> server: GET /main.css
     activate server
-    server-->>client: main.css
+    server -->> client: main.css
     deactivate server
 
-    client->>server: GET /main.js
+    client ->> server: GET /main.js
     activate server
-    server-->>client: main.js
+    server -->> client: main.js
     deactivate server
-
     Note right of client: client executes js code<br>that requests notes
 
-    client->>server: GET /data.json
+    client ->> server: GET /data.json
     activate server
-    server-->>client: data.json [{content: String, date: String}]
+    server -->> client: data.json [{content: String, date: String}]
     deactivate server
-
     Note right of client: event triggers that renders the updated note list
