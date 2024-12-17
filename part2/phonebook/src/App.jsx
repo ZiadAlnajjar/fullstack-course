@@ -19,7 +19,8 @@ const App = () => {
                   .then(initPersons => {
                     setPersons(initPersons);
                     setFilteredPersons(initPersons);
-                  });
+                  })
+                  .catch((err) => displayAlert({ message: err.response.data.error, severity: 'error' }));
   }, []);
   
   const addPerson = (e) => {
@@ -50,9 +51,14 @@ const App = () => {
                         setNewName('');
                         setNewNumber('');
                       })
-                      .catch(() => {
-                        displayError(`Information of ${newName} has already been removed from server`);
-                        removePersonById(foundPerson.id);
+                      .catch((err) => {
+                        if (err.status === 404) {
+                          displayError(`Information of ${newName} has already been removed from server`);
+                          removePersonById(foundPerson.id);
+                          return;
+                        }
+                        
+                        displayError(err.response.data.error);
                       });
         return;
       }
@@ -65,6 +71,7 @@ const App = () => {
                     setNewName('');
                     setNewNumber('');
                   })
+                  .catch((err) => displayError(err.response.data.error));
   };
   
   const deletePerson = (id, name) => () => {
@@ -75,13 +82,12 @@ const App = () => {
     }
     
     personsService.remove(id)
-                  .then((deletedPerson) => {
-                    removePersonById(deletedPerson.id);
-                    displaySuccess(`Deleted ${deletedPerson.name}`);
-                  })
-                  .catch(() => {
+                  .then(() => {
                     removePersonById(id);
                     displaySuccess(`Deleted ${name}`);
+                  })
+                  .catch((err) => {
+                    displayError(err.response.data.error);
                   });
   };
   
@@ -104,9 +110,9 @@ const App = () => {
     setFilteredPersons(updatedFilteredPersons);
   };
   
-  const displaySuccess = (message) => (displayAlert({ message, severity: 'success' }));
+  const displaySuccess = (message) => displayAlert({ message, severity: 'success' });
   
-  const displayError = (message) => (displayAlert({ message, severity: 'error' }));
+  const displayError = (message) => displayAlert({ message, severity: 'error' });
   
   const displayAlert = ({ message, severity = '' }, duration = 2) => {
     setAlert({ message, severity });
