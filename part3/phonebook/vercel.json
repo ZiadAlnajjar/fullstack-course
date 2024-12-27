@@ -7,6 +7,9 @@
       "config": {
         "includeFiles": [
           "dist/**"
+chore        ],
+        "excludeFiles": [
+          ".env"
         ]
       }
     }
