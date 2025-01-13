@@ -1,13 +1,15 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const EntityNotFoundException = require('../exceptions/EntityNotFoundException');
+const { userExtractor } = require('../utils/middleware');
 
 blogRouter.get('/', async (request, response) => {
   const blogs= await Blog.find({}).populate('user', { blogs: 0 });
   response.json(blogs);
 });
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', userExtractor, async (request, response) => {
   const { title, author, url, likes } = request.body;
   const { user } = request;
 
@@ -23,6 +25,9 @@ blogRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog.id);
   await user.save();
 
+  const userData = await User.findById(user.id, { blogs: 0 });
+  savedBlog.user = userData;
+
   response.status(201).json(savedBlog);
 });
 
@@ -37,17 +42,18 @@ blogRouter.get('/:id', async (request, response) => {
 });
 
 blogRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes } = request.body;
+  const { title, author, url, likes, user } = request.body;
 
   const blog = {
     title : title ?? '',
     author: author ?? '',
     url   : url ?? '',
-    likes : likes,
+    likes,
+    user,
   };
 
   const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id,blog, { new: true, runValidators: true },
+    request.params.id, blog, { new: true, runValidators: true },
   );
 
   if (!updatedBlog) {
@@ -57,7 +63,7 @@ blogRouter.put('/:id', async (request, response) => {
   response.json(updatedBlog);
 });
 
-blogRouter.delete('/:id', async (request, response) => {
+blogRouter.delete('/:id', userExtractor, async (request, response) => {
   const { user } = request;
   const id = request.params.id;
 
