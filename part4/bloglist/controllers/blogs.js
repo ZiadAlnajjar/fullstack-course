@@ -5,7 +5,9 @@ const EntityNotFoundException = require('../exceptions/EntityNotFoundException')
 const { userExtractor } = require('../utils/middleware');
 
 blogRouter.get('/', async (request, response) => {
-  const blogs= await Blog.find({}).populate('user', { blogs: 0 });
+  const blogs= await Blog
+    .find({})
+    .populate('user', { blogs: 0 });
   response.json(blogs);
 });
 
@@ -32,7 +34,9 @@ blogRouter.post('/', userExtractor, async (request, response) => {
 });
 
 blogRouter.get('/:id', async (request, response) => {
-  const requestedBlog = await Blog.findById(request.params.id);
+  const requestedBlog = await Blog
+    .findById(request.params.id)
+    .populate('user', { blogs: 0 });
 
   if (!requestedBlog) {
     throw new EntityNotFoundException('blog');
@@ -57,8 +61,24 @@ blogRouter.put('/:id', async (request, response) => {
   );
 
   if (!updatedBlog) {
-    throw new EntityNotFoundException();
+    throw new EntityNotFoundException('blog');
   }
+
+  response.json(updatedBlog);
+});
+
+blogRouter.patch('/:id/like', async (request, response) => {
+  const blog = await Blog.findById(request.params.id);
+
+  if (!blog) {
+    throw new EntityNotFoundException('blog');
+  }
+
+  blog.likes += 1;
+
+  const updatedBlog = await Blog.findByIdAndUpdate(
+    blog.id, blog, { new: true, runValidators: true },
+  );
 
   response.json(updatedBlog);
 });

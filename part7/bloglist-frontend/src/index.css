@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+.absolute-center {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+}
+
+.absolute-centerX {
+    @apply absolute left-1/2 transform -translate-x-1/2;
+}
+
+.alert > div {
+    @apply mr-2.5
+}

@@ -1,10 +1,10 @@
-const loginRouter = require('express').Router();
+const authRouter = require('express').Router();
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const config = require('../utils/config');
 
-loginRouter.post('/', async (request, response) => {
+authRouter.post('/', async (request, response) => {
   const { username, password } = request.body;
 
   const user = await User.findOne({ username });
@@ -27,8 +27,11 @@ loginRouter.post('/', async (request, response) => {
   });
 
   response.status(200).json({
-    name: user.name, username: user.username, token,
+    user: {
+      name: user.name, username: user.username,
+    },
+    token,
   });
 });
 
-module.exports = loginRouter;
+module.exports = authRouter;

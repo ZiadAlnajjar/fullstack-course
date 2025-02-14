@@ -7,9 +7,10 @@ const app = express();
 const cors = require('cors');
 const middleware = require('./utils/middleware');
 
-const loginRouter = require('./controllers/login');
+const authRouter = require('./controllers/auth');
 const usersRouter = require('./controllers/users');
 const blogsRouter = require('./controllers/blogs');
+const commentsRouter = require('./controllers/comments');
 
 mongoose.set('strictQuery', false);
 
@@ -29,9 +30,10 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
-app.use('/api/login', loginRouter);
+app.use('/api/login', authRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/blogs', blogsRouter);
+app.use('/api/blogs/:id/comments', commentsRouter);
 
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing');
