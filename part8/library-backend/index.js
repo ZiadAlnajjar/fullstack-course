@@ -18,17 +18,6 @@ const httpServer = require('express/lib/application');
 
 db.connect();
 
-// const server = new ApolloServer({
-//   typeDefs,
-//   resolvers,
-// })
-//
-// startStandaloneServer(server, {
-//   listen: { port: 4000 },
-// }).then(({ url }) => {
-//   console.log(`Server ready at ${url}`)
-// })
-
 const start = async () => {
   const app = express();
   const httpServer = http.createServer(app);
