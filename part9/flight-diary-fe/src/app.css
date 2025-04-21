@@ -1,0 +1,7 @@
+input:not([type=radio]) {
+    display: block;
+}
+
+.alert-error {
+    color: #a94442;
+}
